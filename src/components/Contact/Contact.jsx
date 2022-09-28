@@ -1,4 +1,10 @@
-import { ContactList, ContactItem, Delete } from './Contact.styled';
+import {
+  ContactList,
+  ContactItem,
+  Delete,
+  Filter,
+  ContactWrapper,
+} from './Contact.styled';
 import PropTypes from 'prop-types';
 function Contact({
   states: { contacts, filter = '' },
@@ -6,8 +12,8 @@ function Contact({
   deleteContact,
 }) {
   return (
-    <div>
-      <input type="text" onInput={onChangeSearchInput} />
+    <ContactWrapper>
+      <Filter type="text" onInput={onChangeSearchInput} />
       <ContactList>
         {contacts
           .filter(({ name }) => {
@@ -22,7 +28,7 @@ function Contact({
             );
           })}
       </ContactList>
-    </div>
+    </ContactWrapper>
   );
 }
 export default Contact;
