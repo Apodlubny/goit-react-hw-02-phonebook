@@ -6,10 +6,10 @@ import {
   ContactItemText,
   ContactItemButton,
 } from 'components/ContactList/ContactList.styled';
-export const ContactList = ({ neddedCards, deleteCard }) => {
+export const ContactList = ({ contacts, deleteCard }) => {
   return (
     <ContactListEl>
-      {neddedCards.map(({ name, number, id }) => {
+      {contacts.map(({ name, number, id }) => {
         return (
           <ContactListItem key={id}>
             <ContactItemHeader>{name}</ContactItemHeader>
@@ -25,7 +25,7 @@ export const ContactList = ({ neddedCards, deleteCard }) => {
 };
 
 ContactList.propTypes = {
-  neddedCards: PropTypes.arrayOf(
+  contacts: PropTypes.arrayOf(
     PropTypes.exact({
       name: PropTypes.string.isRequired,
       number: PropTypes.string.isRequired,

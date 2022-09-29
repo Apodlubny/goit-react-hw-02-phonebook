@@ -54,7 +54,7 @@ export class App extends Component {
     );
   };
 
-  deleteCard = contactId => {
+  deleteContact = contactId => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
@@ -66,18 +66,14 @@ export class App extends Component {
       <Container>
         <h1>Phonebook</h1>
         <ContactForm onSubmit={this.handleSubmit} />
-
-        {this.state.contacts.length && (
-          <>
-            <h2>Contacts</h2>
-            <Filter
-              value={this.state.filter}
-              onFilterChange={this.onFilterChange}
-            />
-          </>
+        {this.state.contacts.length > 0 && <h2>Contacts</h2>}
+        {this.state.contacts.length > 0 && (
+          <Filter
+            value={this.state.filter}
+            onFilterChange={this.onFilterChange}
+          />
         )}
-
-        <ContactList neddedCards={neddedCards} deleteCard={this.deleteCard} />
+        <ContactList contacts={neddedCards} deleteCard={this.deleteContact} />
       </Container>
     );
   }
