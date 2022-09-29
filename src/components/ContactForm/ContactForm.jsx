@@ -1,53 +1,59 @@
-import { Component } from 'react';
-import { Formik, Form, ErrorMessage } from 'formik';
-import { Label, Input, Btn, FormContainer } from './ContactForm.styled';
+import { PropTypes } from 'prop-types';
+import { Formik } from 'formik';
 import * as yup from 'yup';
+import {
+  FormEl,
+  InputEl,
+  Label,
+  SubmitButton,
+  Error,
+} from 'components/ContactForm/ContactForm.styled';
+
 const schema = yup.object().shape({
-  name: yup.string().required(),
-  number: yup.string().min(3).max(10).required('A phone number is required'),
+  name: yup
+    .string()
+    .matches(
+      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
+      "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+    )
+    .required(),
+  number: yup
+    .string()
+    .min(4)
+    .max(10)
+    .matches(
+      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
+      'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
+    )
+    .required(),
 });
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
 
-  handSubmit = (valus, { resetForm }) => {
-    this.props.formSubmitHandler(valus);
+const initialValues = {
+  name: '',
+  number: '',
+};
 
-    resetForm();
-  };
+export const ContactForm = ({ onSubmit }) => {
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={schema}
+      onSubmit={onSubmit}
+    >
+      <FormEl autoComplete="off">
+        <Label htmlFor="name">Name</Label>
+        <InputEl type="text" name="name" placeholder="Enter name" />
+        <Error name="name" component="div" />
 
-  render() {
-    return (
-      <Formik
-        initialValues={this.state}
-        validationSchema={schema}
-        onSubmit={this.handSubmit}
-      >
-        <FormContainer>
-          <Form autoComplete="off">
-            <Label htmlFor="name">
-              Name
-              <Input type="text" name="name" />
-              <ErrorMessage name="name" />
-            </Label>
+        <Label htmlFor="number">Number</Label>
+        <InputEl type="tel" name="number" placeholder="Enter phone number" />
+        <Error name="number" component="div" />
+        <SubmitButton type="submit">Add contact</SubmitButton>
+      </FormEl>
+    </Formik>
+  );
+};
 
-            <Label htmlFor="number" style={{ marginTop: '20px' }}>
-              Number
-              <Input
-                type="tel"
-                name="number"
-                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              />
-              <ErrorMessage name="number" />
-            </Label>
-            <Btn type="submit">Add contact</Btn>
-          </Form>
-        </FormContainer>
-      </Formik>
-    );
-  }
-}
-export default ContactForm;
+ContactForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};

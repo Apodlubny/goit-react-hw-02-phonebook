@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import { ContactList } from 'components/ContactList/ContactList';
 import { nanoid } from 'nanoid';
-import { Container } from './App.styled';
-import Section from './Section/Section';
-import ContactForm from './ContactForm/ContactForm';
-import Contact from './Contact/Contact';
+import { Filter } from 'components/Filter/Filter';
+import { ContactForm } from 'components/ContactForm/ContactForm';
+import { Container } from 'components/App.styled';
 
-class App extends Component {
+export class App extends Component {
   state = {
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -15,53 +15,70 @@ class App extends Component {
     ],
     filter: '',
   };
-  onChangeSearchInput = e => {
-    this.setState(() => ({
-      filter: e.target.value,
-    }));
+
+  handleSubmit = (values, { resetForm }) => {
+    resetForm();
+
+    const { name, number } = values;
+    const contact = {
+      name,
+      number,
+    };
+    const dublicateContact = this.findDublicateContact(
+      contact,
+      this.state.contacts
+    );
+    dublicateContact
+      ? alert(`${contact.name} is already in contacts`)
+      : this.setState(prevState => ({
+          contacts: [...prevState.contacts, { ...values, id: nanoid() }],
+        }));
   };
 
-  deleteContact = contactId => {
-    this.setState(({ contacts }) => ({
-      contacts: contacts.filter(contact => contact.id !== contactId),
-    }));
+  findDublicateContact = (contact, contactsList) => {
+    return contactsList.find(
+      item => item.name.toLowerCase() === contact.name.toLowerCase()
+    );
   };
 
-  formSubmitHandler = ({ name, number }) => {
-    const onList = this.state.contacts.find(contact => contact.name === name);
-    if (onList) {
-      alert('This contact is already added');
-      return;
-    }
-    this.setState(({ contacts }) => {
-      return {
-        contacts: [
-          {
-            id: nanoid(),
-            name,
-            number,
-          },
-          ...contacts,
-        ],
-      };
+  onFilterChange = e => {
+    this.setState({
+      filter: e.currentTarget.value,
     });
   };
 
+  getFilteredContacts = () => {
+    const normalizedFilter = this.state.filter.toLowerCase();
+    return this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
+  deleteCard = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
+
   render() {
+    const neddedCards = this.getFilteredContacts();
     return (
       <Container>
-        <Section title="Phonebook" />
-        <ContactForm formSubmitHandler={this.formSubmitHandler} />
+        <h1>Phonebook</h1>
+        <ContactForm onSubmit={this.handleSubmit} />
 
-        <Section title="Contacts" />
-        <Contact
-          states={this.state}
-          onChangeSearchInput={this.onChangeSearchInput}
-          deleteContact={this.deleteContact}
-        />
+        {this.state.contacts.length && (
+          <>
+            <h2>Contacts</h2>
+            <Filter
+              value={this.state.filter}
+              onFilterChange={this.onFilterChange}
+            />
+          </>
+        )}
+
+        <ContactList neddedCards={neddedCards} deleteCard={this.deleteCard} />
       </Container>
     );
   }
 }
-
-export default App;
