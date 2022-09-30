@@ -6,7 +6,7 @@ import {
   ContactItemText,
   ContactItemButton,
 } from 'components/ContactList/ContactList.styled';
-export const ContactList = ({ contacts, deleteCard }) => {
+export const ContactList = ({ contacts, deleteContact }) => {
   return (
     <ContactListEl>
       {contacts.map(({ name, number, id }) => {
@@ -14,7 +14,7 @@ export const ContactList = ({ contacts, deleteCard }) => {
           <ContactListItem key={id}>
             <ContactItemHeader>{name}</ContactItemHeader>
             <ContactItemText>{number}</ContactItemText>
-            <ContactItemButton type="button" onClick={() => deleteCard(id)}>
+            <ContactItemButton type="button" onClick={() => deleteContact(id)}>
               Delete
             </ContactItemButton>
           </ContactListItem>
@@ -32,5 +32,5 @@ ContactList.propTypes = {
       id: PropTypes.string.isRequired,
     })
   ),
-  deleteCard: PropTypes.func.isRequired,
+  deleteContact: PropTypes.func.isRequired,
 };

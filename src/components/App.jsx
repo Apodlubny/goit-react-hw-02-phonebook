@@ -61,7 +61,7 @@ export class App extends Component {
   };
 
   render() {
-    const neddedCards = this.getFilteredContacts();
+    const FilteredContacts = this.getFilteredContacts();
     return (
       <Container>
         <h1>Phonebook</h1>
@@ -73,7 +73,10 @@ export class App extends Component {
             onFilterChange={this.onFilterChange}
           />
         )}
-        <ContactList contacts={neddedCards} deleteCard={this.deleteContact} />
+        <ContactList
+          contacts={FilteredContacts}
+          deleteContact={this.deleteContact}
+        />
       </Container>
     );
   }
